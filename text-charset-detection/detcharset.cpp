@@ -2,13 +2,14 @@
 #include <memory>
 #include <bitset>
 #include <cassert>
+#include <stdexcept>
 
 namespace text_charset_detection
 {
 	namespace detail {
 		constexpr size_t UTF8_MAX_CHAR_SIZE = 4;							// longest UTF-8 char size in bytes
-		constexpr size_t UTF8_NO_BOM_TEXT_SAMPLE_SIZE = 0; // 1024;			// how many bytes to read from the beginning of a text file, 0 means to read whole file to decide if it's in UTF-8 -- can lead to bad_alloc for large files
-		constexpr size_t UTF8_TINY_MODE_SIZE_LIMIT = 1'000'000'000;						// non-tiny mode means checking sample buffer for 0...N-4 bytes, omiting interleaved buffer-end checks, speeds up by around 10%, according to my measures
+		constexpr size_t UTF8_NO_BOM_TEXT_SAMPLE_SIZE = 102400;				// how many bytes to read from the beginning of a text file, 0 means to read whole file to decide if it's in UTF-8 -- can lead to bad_alloc for large files
+		constexpr size_t UTF8_TINY_MODE_SIZE_LIMIT = 5000;					// non-tiny mode means checking sample buffer for 0...N-4 bytes, omiting interleaved buffer-end checks, speeds up by around 10%, according to my measures
 		constexpr bool UTF8_SUBCLASSIFY_TOO_LONG_SEQUENCES = true;			// should it distinguish between different >4 byte (invalid) UTF-8 sequences by size (next checked position for valid UTF-8 char depends on this)
 		constexpr bool UTF8_DETAILED_ERROR_LIST = true;						// should it not stop early if evidence for non-UTF-8 found (true: detailed report for all UTF-8 errors found, much slower)
 
